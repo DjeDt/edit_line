@@ -25,7 +25,6 @@ int		read_line(int fd, char **line)
 		exit (-1);
 	}
 	count = 0;
-	save = 0;
 	while (1)
 	{
 		ret = read(fd, buf + count, 1);
@@ -33,15 +32,15 @@ int		read_line(int fd, char **line)
 			break ;
 		if (buf[count] == '[')
 			save = count;
-		if (buf[save + 1] == 'A')
+		if (buf[save] == '[' && buf[save + 1] == 'A')
 			ft_putendl("up");
-		if (buf[save + 1] == 'B')
+		if (buf[save] == '[' && buf[save + 1] == 'B')
 			ft_putendl("down");
-		if (buf[save + 1] == 'C')
+		if (buf[save] == '[' && buf[save + 1] == 'C')
 			ft_putendl("right");
-		if (buf[save + 1] == 'D')
+		if (buf[save] == '[' && buf[save + 1] == 'D')
 			ft_putendl("left");
-		if (buf[save + 1] == '3')
+		if (buf[save] == '[' && buf[save + 1] == '3')
 			ft_putendl("delete");
 		count++;
 	}
