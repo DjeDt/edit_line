@@ -11,12 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*
-static void	special_input(const char *str, int save, int count)
-{
-	if ()
-}
-*/
 
 void	arrow_left()
 {
@@ -35,24 +29,28 @@ void	arrow_delete()
 
 void	which_key(int fd)
 {
-	char tmp[2];
+	char c;
 
-	read(fd, &tmp, 2);
-	if (tmp[0] == '[' && tmp[1] == 'C')
-		arrow_left();
-	else if (tmp[0] == '[' && tmp[1] == 'D')
-		arrow_right();
-	else if (tmp[0] == '[' && tmp[1] == '3')
-		arrow_delete();
+	read(fd, &c, 1);
+	if (c == '[')
+	{
+		read(fd, &c, 1);
+		if (c == 'C')
+			arrow_left();
+		else if (c == 'D')
+			arrow_right();
+		else if (c == '3')
+			arrow_delete();
+	}
 }
 
 int		read_line(int fd, char **line)
 {
-	char	*buf;
 	int		count;
 	int		ret;
+	t_info	info;
 
-	if (!(buf = (char*)malloc(sizeof(char) * 256)))
+	if (!(info.buf = (char*)malloc(sizeof(char) * 256)))
 	{
 		ft_putendl_fd("error malloc readline: abort", 2);
 		exit (-1);
@@ -60,14 +58,16 @@ int		read_line(int fd, char **line)
 	count = 0;
 	while (1)
 	{
-		ret = read(fd, buf + count, 1);
-		if (buf[count] == 10)
+		ret = read(fd, info.buf + count, 1);
+		if (info.buf[count] == 10)
 			break ;
-		if (buf[count] == 27)
+		if (info.buf[count] == 27)
 			which_key(fd);
+		if (ft_isprint(info.buf[count]))
+			ft_putchar(info.buf[count]);
 		count++;
 	}
-	buf[count] = '\0';
-	*line = buf;
+	info.buf[count] = '\0';
+	*line = info.buf;
 	return (ret);
 }

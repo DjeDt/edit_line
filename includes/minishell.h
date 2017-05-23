@@ -23,6 +23,7 @@ typedef struct	s_info
 {
 	size_t	cur_pos;
 	int		term_max;
+	char	*buf;
 }				t_info;
 
 int		read_line(const int fd, char **line);

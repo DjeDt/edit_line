@@ -26,17 +26,14 @@ void	mode_raw()
 
 int		main(void)
 {
-	int		count;
 	char	*line;
 
 	line = NULL;
 	while (1)
 	{
 		mode_raw();
-		count= 0;
 		ft_putstr("$> ");
 		read_line(0, &line);
-		ft_putstr(line);
 		if (ft_strcmp(line, "exit") == 0)
 			break ;
 		ft_strdel(&line);
