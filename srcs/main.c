@@ -1,29 +1,46 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/05/23 14:14:23 by ddinaut           #+#    #+#             */
+/*   Updated: 2017/05/23 14:53:05 by ddinaut          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int main()
+#include "minishell.h"
+
+void	mode_raw()
 {
-	int count;
-	char *line;
+	struct termios new;
+
+	if (tcgetattr(0, &new) == -1)
+		ft_putendl("tcgeattr error");
+	new.c_lflag &= ~ (ICANON | ECHO);
+	new.c_lflag = 0;
+	if (tcsetattr(0, TCSANOW , &new) == -1)
+		ft_putendl("tcsetattr error");
+}
+
+int		main(void)
+{
+	int		count;
+	char	*line;
 
 	line = NULL;
 	while (1)
 	{
+		mode_raw();
 		count= 0;
 		ft_putstr("$> ");
 		read_line(0, &line);
-		ft_putstr("line = ");
-		ft_putendl(line);
-		ft_putendl("line decompose :");
-		while (line[count] != '\0')
-		{
-			ft_putstr("-");
-			ft_putchar(line[count]);
-			count++;
-			ft_putchar('\n');
-		}
+		ft_putstr(line);
 		if (ft_strcmp(line, "exit") == 0)
 			break ;
 		ft_strdel(&line);
+		ft_putchar('\n');
 	}
 	ft_strdel(&line);
 	return (0);

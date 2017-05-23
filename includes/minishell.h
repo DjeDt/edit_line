@@ -17,6 +17,22 @@
 # include <sys/stat.h>
 # include <signal.h>
 
-int				read_line(const int fd, char **line);
+# include <termios.h>
+
+typedef struct	s_info
+{
+	size_t	cur_pos;
+	int		term_max;
+}				t_info;
+
+int		read_line(const int fd, char **line);
+void	mode_raw(void);
+void	mode_normal(void);
+
+/* arrow */
+void	arrow_left();
+void	arrow_right();
+void	arrow_delete();
+void	which_arrow(int fd);
 
 #endif

@@ -11,13 +11,46 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+/*
+static void	special_input(const char *str, int save, int count)
+{
+	if ()
+}
+*/
+
+void	arrow_left()
+{
+	ft_putstr("\033[1C");
+}
+
+void	arrow_right()
+{
+	ft_putstr("\033[1D");
+}
+
+void	arrow_delete()
+{
+	ft_putendl("delete");
+}
+
+void	which_key(int fd)
+{
+	char tmp[2];
+
+	read(fd, &tmp, 2);
+	if (tmp[0] == '[' && tmp[1] == 'C')
+		arrow_left();
+	else if (tmp[0] == '[' && tmp[1] == 'D')
+		arrow_right();
+	else if (tmp[0] == '[' && tmp[1] == '3')
+		arrow_delete();
+}
 
 int		read_line(int fd, char **line)
 {
 	char	*buf;
 	int		count;
 	int		ret;
-	int		save;
 
 	if (!(buf = (char*)malloc(sizeof(char) * 256)))
 	{
@@ -30,18 +63,8 @@ int		read_line(int fd, char **line)
 		ret = read(fd, buf + count, 1);
 		if (buf[count] == 10)
 			break ;
-		if (buf[count] == '[')
-			save = count;
-		if (buf[save] == '[' && buf[save + 1] == 'A')
-			ft_putendl("up");
-		if (buf[save] == '[' && buf[save + 1] == 'B')
-			ft_putendl("down");
-		if (buf[save] == '[' && buf[save + 1] == 'C')
-			ft_putendl("right");
-		if (buf[save] == '[' && buf[save + 1] == 'D')
-			ft_putendl("left");
-		if (buf[save] == '[' && buf[save + 1] == '3')
-			ft_putendl("delete");
+		if (buf[count] == 27)
+			which_key(fd);
 		count++;
 	}
 	buf[count] = '\0';
