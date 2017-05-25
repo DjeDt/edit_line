@@ -21,8 +21,9 @@
 
 typedef struct	s_info
 {
+	char	c;
 	size_t	cur_pos;
-	int		len_max;
+	size_t	len_max;
 	int		char_max;
 	int		nb_line;
 	char	*buf;
