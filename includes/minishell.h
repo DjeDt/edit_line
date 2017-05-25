@@ -15,14 +15,16 @@
 
 # include "libft.h"
 # include <sys/stat.h>
+# include <sys/ioctl.h>
 # include <signal.h>
-
 # include <termios.h>
 
 typedef struct	s_info
 {
 	size_t	cur_pos;
-	int		term_max;
+	int		len_max;
+	int		char_max;
+	int		nb_line;
 	char	*buf;
 }				t_info;
 
@@ -31,9 +33,9 @@ void	mode_raw(void);
 void	mode_normal(void);
 
 /* arrow */
-void	arrow_left();
-void	arrow_right();
-void	arrow_delete();
+void	arrow_left(t_info info);
+void	arrow_right(t_info info);
+void	arrow_delete(t_info info);
 void	which_arrow(int fd);
 
 #endif
