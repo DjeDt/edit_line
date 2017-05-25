@@ -6,7 +6,7 @@
 #    By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/17 14:14:43 by ddinaut           #+#    #+#              #
-#    Updated: 2017/05/18 12:04:02 by ddinaut          ###   ########.fr        #
+#    Updated: 2017/05/25 15:23:09 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -42,6 +42,7 @@ SRC = $(addprefix $(SRC_PATH)/,$(SRCS))
 
 # Sources #
 SRCS =	main.c \
+		arrow_key.c \
 		read_line.c
 
 # Rules #

@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 14:14:23 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/23 14:53:05 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/25 15:54:27 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	mode_raw()
 
 	if (tcgetattr(0, &new) == -1)
 		ft_putendl("tcgeattr error");
-	new.c_lflag &= ~ (ICANON | ECHO);
+	new.c_lflag &= ~(ICANON | ECHO);
 	new.c_lflag = 0;
 	if (tcsetattr(0, TCSANOW , &new) == -1)
 		ft_putendl("tcsetattr error");
@@ -34,6 +34,8 @@ int		main(void)
 		mode_raw();
 		ft_putstr("$> ");
 		read_line(0, &line);
+		ft_putstr("\nline = ");
+		ft_putendl(line);
 		if (ft_strcmp(line, "exit") == 0)
 			break ;
 		ft_strdel(&line);

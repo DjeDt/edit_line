@@ -6,52 +6,11 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/08 22:47:22 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/18 12:25:39 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/25 20:52:00 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	arrow_left(t_info info)
-{
-	if (info.cur_pos > 0)
-	{
-		info.cur_pos--;
-		ft_putstr("\033[1D");
-	}
-}
-
-void	arrow_right(t_info info)
-{
-	if (info.cur_pos < info.len_max)
-	{
-		info.cur_pos++;
-		ft_putstr("\033[1C");
-	}
-}
-
-void	arrow_delete(t_info info)
-{
-	ft_putendl("delete");
-	(void)info;
-}
-
-void	which_key(int fd, t_info info)
-{
-//	char c;
-
-	read(fd, &info.c, 1);
-	if (info.c == '[')
-	{
-		read(fd, &info.c, 1);
-		if (info.c == 'C')
-			arrow_right(info);
-		else if (info.c == 'D')
-			arrow_left(info);
-		else if (info.c == '3')
-			arrow_delete(info);
-	}
-}
 
 static void init_struct(t_info *info, int fd)
 {
@@ -64,7 +23,11 @@ static void init_struct(t_info *info, int fd)
 	info->nb_line = w.ws_row;
 	info->cur_pos = 0;
 	info->c = 0;
-		if (!(info->buf = (char*)malloc(sizeof(char) * info->char_max - 2))) // - 2 == + 1 - 3 -> (- 3 pour la taille du prompt)
+
+//	info->fd = fopen("/Users/ddinaut/Desktop/edit_line/log.log", "w+");
+	info->fd = fopen("log.log", "w+");
+
+	if (!(info->buf = (char*)malloc(sizeof(char) * info->char_max - 2))) // - 2 == + 1 - 3 -> (- 3 pour la taille du prompt)
 	{
 		ft_putendl("error malloc init struct");
 		exit (-1);
@@ -79,11 +42,14 @@ static void	new_size(t_info *info)
 
 	new = NULL;
 	info->len_max = info->char_max * nbr;
-	if (!(new = malloc(sizeof(char) * info->len_max + 1)))
+	fprintf(info->fd, "\n\nFonction new size :\n");
+	fprintf(info->fd, "- info->len max = %zu\n- nbr = %d\n", info->len_max, nbr);
+	if (!(new = malloc(sizeof(char) * info->len_max - 2))) // pareil que pour init struct
 	{
 		ft_putendl("error malloc new_size");
 		exit (-1);
 	}
+	ft_bzero(new, info->len_max);
 	count = -1;
 	while (info->buf[++count])
 		new[count] = info->buf[count];
@@ -101,23 +67,16 @@ int		read_line(int fd, char **line)
 	init_struct(&info, fd);
 	while (1)
 	{
+		fprintf(info.fd, "buf = %s\n", info.buf);
 		if (info.cur_pos == (size_t)info.len_max)
 			new_size(&info);
-//		ret = read(fd, info.buf + info.cur_pos, 1);
 		ret = read(fd, &info.c, 1);
 		if (info.c == 10)
 			break ;
-//		if (info.buf[info.cur_pos] == 10 || ret > 1)
-//			break ;
-		if (info.c == 27)
-			which_key(fd, info);
-//		if (info.buf[info.cur_pos] == 27)
-//			which_key(fd, info);
 		if (ft_isprint(info.c))
-			info.buf[info.cur_pos++] = info.c;
-//		if (ft_isprint(info.buf[info.cur_pos]))
-//			info.buf[cur_pos] = c;
-//		info.cur_pos++;
+			add_char(&info);
+		if (info.c == 27)
+			which_key(fd, &info);
 	}
 	info.buf[info.cur_pos] = '\0';
 	*line = info.buf;
