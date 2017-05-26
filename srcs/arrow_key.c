@@ -24,10 +24,8 @@ void	arrow_left(t_info *info)
 void	arrow_right(t_info *info)
 {
 	if (info->cur_pos < ft_strlen(info->buf))
-	{
-		info->cur_pos++;
 		ft_putstr("\033[1C");
-	}
+	info->cur_pos++;
 }
 
 void	arrow_delete(t_info *info)
@@ -53,6 +51,7 @@ void	add_char(t_info *info)
 	else
 	{
 		fprintf(info->fd, "else\n");
+		fprintf(info->fd, "avant modif buf = %s\n", info->buf);
 		while (info->buf[count])
 		{
 			fprintf(info->fd, "new buf = %s\n", info->buf);
@@ -61,11 +60,13 @@ void	add_char(t_info *info)
 			count++;
 			info->c = info->buf[count];
 			info->buf[count] = save;
+			ft_putchar(info->buf[count]);
 			save = info->c;
 			count++;
 		}
-		ft_putstr("\033[K");
-		ft_putstr(info->buf + info->cur_pos + 1);
+//		ft_putstr("\033[K");
+		fprintf(info->fd, "apres modif buf = %s\n", info->buf);
+//		ft_putstr(info->buf + info->cur_pos);
 	}
 	info->cur_pos++;
 }
