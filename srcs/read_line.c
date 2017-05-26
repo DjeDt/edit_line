@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/08 22:47:22 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/25 20:52:00 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/26 17:48:55 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,15 @@ static void init_struct(t_info *info, int fd)
 	info->cur_pos = 0;
 	info->c = 0;
 
-//	info->fd = fopen("/Users/ddinaut/Desktop/edit_line/log.log", "w+");
 	info->fd = fopen("log.log", "w+");
 
+	fprintf(info->fd, "fonction init struct :\nchar_max = %d\nlen_max = %zu\nb_line = %d\n", info->char_max, info->len_max, info->nb_line);
 	if (!(info->buf = (char*)malloc(sizeof(char) * info->char_max - 2))) // - 2 == + 1 - 3 -> (- 3 pour la taille du prompt)
 	{
 		ft_putendl("error malloc init struct");
 		exit (-1);
 	}
+	ft_bzero(info->buf, info->char_max - 2);
 }
 
 static void	new_size(t_info *info)
@@ -67,9 +68,8 @@ int		read_line(int fd, char **line)
 	init_struct(&info, fd);
 	while (1)
 	{
-		fprintf(info.fd, "buf = %s\n", info.buf);
-		if (info.cur_pos == (size_t)info.len_max)
-			new_size(&info);
+		fprintf(info.fd, "debut boucle readline: buf = %s\n", info.buf);
+		info.cur_pos == (size_t)info.len_max ? new_size(&info) : 0;
 		ret = read(fd, &info.c, 1);
 		if (info.c == 10)
 			break ;
@@ -77,8 +77,10 @@ int		read_line(int fd, char **line)
 			add_char(&info);
 		if (info.c == 27)
 			which_key(fd, &info);
+		if (info.c == 127)
+			arrow_del(&info);
+		fprintf(info.fd, "fin de boucle readline: buf = %s\n", info.buf);
 	}
-	info.buf[info.cur_pos] = '\0';
 	*line = info.buf;
 	return (ret);
 }

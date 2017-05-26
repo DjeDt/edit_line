@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/25 20:56:42 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/26 18:13:54 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,51 +23,71 @@ void	arrow_left(t_info *info)
 
 void	arrow_right(t_info *info)
 {
+	if (info->cur_pos == info->char_max)
+	{
+		/* GERER LE NBR DE LIGNE */
+	}
 	if (info->cur_pos < ft_strlen(info->buf))
 		ft_putstr("\033[1C");
 	info->cur_pos++;
 }
 
-void	arrow_delete(t_info *info)
+void	arrow_del(t_info *info)
+{
+
+	size_t count;
+	size_t max;
+
+	if (ft_strlen(info->buf) < 1)
+		return ;
+	count = info->cur_pos - 1;
+	max = ft_strlen(info->buf);
+	while (count < max)
+	{
+		info->buf[count] = info->buf[count + 1];
+		count++;
+	}
+	info->buf[count] = '\0';
+	ft_putstr("\033[1D");
+	ft_putstr("\033[0K");
+	ft_putstr("\033[s");
+	ft_putstr(info->buf + info->cur_pos - 1);
+	ft_putstr("\033[u");
+	info->cur_pos--;
+}
+
+void	arrow_rev_del(t_info *info)
 {
 	ft_putendl("delete");
 	(void)info;
 }
 
+static void decal_char(char *str, const char c, const size_t pos)
+{
+	size_t count;
+	size_t max;
+
+	count = pos + 1;
+	max = ft_strlen(str);
+	while (max > pos)
+	{
+		str[max] = str[max - 1];
+		max--;
+	}
+	str[max] = c;
+	ft_putstr("\033[0K");
+	ft_putstr("\033[s");
+	ft_putstr(str + max + 1);
+	ft_putstr("\033[u");
+}
+
 void	add_char(t_info *info)
 {
-	char	save;
-	size_t	count;
-
 	ft_putchar(info->c);
-	fprintf(info->fd, "\n\nFonction add_char:\n");
-	count = info->cur_pos;
-	fprintf(info->fd, "curseur = %zu | char = %c\n", count, info->c);
 	if (info->cur_pos == ft_strlen(info->buf))
-	{
-		fprintf(info->fd, "if\n");
 		info->buf[info->cur_pos] = info->c;
-	}
 	else
-	{
-		fprintf(info->fd, "else\n");
-		fprintf(info->fd, "avant modif buf = %s\n", info->buf);
-		while (info->buf[count])
-		{
-			fprintf(info->fd, "new buf = %s\n", info->buf);
-			save = info->buf[count];
-			info->buf[count] = info->c;
-			count++;
-			info->c = info->buf[count];
-			info->buf[count] = save;
-			ft_putchar(info->buf[count]);
-			save = info->c;
-			count++;
-		}
-//		ft_putstr("\033[K");
-		fprintf(info->fd, "apres modif buf = %s\n", info->buf);
-//		ft_putstr(info->buf + info->cur_pos);
-	}
+		decal_char(info->buf, info->c, info->cur_pos);
 	info->cur_pos++;
 }
 
@@ -82,6 +102,6 @@ void	which_key(int fd, t_info *info)
 		else if (info->c == 'D')
 			arrow_left(info);
 		else if (info->c == '3')
-			arrow_delete(info);
+			arrow_rev_del(info);
 	}
 }
