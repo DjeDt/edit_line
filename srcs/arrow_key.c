@@ -12,36 +12,15 @@
 
 #include "minishell.h"
 
-void	arrow_left(t_info *info)
-{
-	if (info->cur_pos > 0)
-	{
-		info->cur_pos--;
-		ft_putstr("\033[1D");
-	}
-}
-
-void	arrow_right(t_info *info)
-{
-	if (info->cur_pos == info->char_max)
-	{
-		/* GERER LE NBR DE LIGNE */
-	}
-	if (info->cur_pos < ft_strlen(info->buf))
-		ft_putstr("\033[1C");
-	info->cur_pos++;
-}
-
 void	arrow_del(t_info *info)
 {
-
-	size_t count;
 	size_t max;
+	size_t count;
 
 	if (ft_strlen(info->buf) < 1)
 		return ;
-	count = info->cur_pos - 1;
 	max = ft_strlen(info->buf);
+	count = info->cur_pos - 1;
 	while (count < max)
 	{
 		info->buf[count] = info->buf[count + 1];
@@ -50,24 +29,37 @@ void	arrow_del(t_info *info)
 	info->buf[count] = '\0';
 	ft_putstr("\033[1D");
 	ft_putstr("\033[0K");
-	ft_putstr("\033[s");
+	ft_putstr("\033[s"); // save la position du curseur
 	ft_putstr(info->buf + info->cur_pos - 1);
-	ft_putstr("\033[u");
+	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
 	info->cur_pos--;
 }
 
 void	arrow_rev_del(t_info *info)
 {
-	ft_putendl("delete");
-	(void)info;
+	size_t max;
+	size_t count;
+
+	if (info->buf[info->cur_pos + 1] && info->buf[info->cur_pos + 1] == '\0')
+		return ;
+	count = info->cur_pos;
+	max = ft_strlen(info->buf) + 1;
+	while (count < max && info->buf[count] != '\0')
+	{
+		info->buf[count] = info->buf[count + 1];
+		count++;
+	}
+	info->buf[count] = '\0';
+	ft_putstr("\033[0K");
+	ft_putstr("\033[s"); // save la position du curseur
+	ft_putstr(info->buf + info->cur_pos);
+	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
 }
 
 static void decal_char(char *str, const char c, const size_t pos)
 {
-	size_t count;
 	size_t max;
 
-	count = pos + 1;
 	max = ft_strlen(str);
 	while (max > pos)
 	{
@@ -102,6 +94,10 @@ void	which_key(int fd, t_info *info)
 		else if (info->c == 'D')
 			arrow_left(info);
 		else if (info->c == '3')
-			arrow_rev_del(info);
+		{
+			read(fd, &info->c, 1);
+			if (info->c == '~')
+				arrow_rev_del(info);
+		}
 	}
 }

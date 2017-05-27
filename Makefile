@@ -16,7 +16,7 @@ NAME =	edit_line
 # Compilation #
 CC			= gcc
 FLAGS		= -Wall -Wextra -Werror
-ADDFLAGS	= -g
+ADDFLAGS	=
 
 # Directories #
 OBJ_PATH = obj
@@ -42,8 +42,9 @@ SRC = $(addprefix $(SRC_PATH)/,$(SRCS))
 
 # Sources #
 SRCS =	main.c \
+		read_line.c \
 		arrow_key.c \
-		read_line.c
+		cursor_move.c
 
 # Rules #
 .PHONY: all norme clean fclean re
