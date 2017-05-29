@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 15:02:42 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/26 17:37:38 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/29 19:35:26 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ typedef struct	s_info
 
 	char	c;
 	char	*buf;
+	size_t	buf_size;
 
 	size_t	cur_pos;
 
 	size_t	buf_max_size;
-	int		char_max_by_line;
+	size_t	char_max_by_line;
 
-	int		begin_line;
-	int		actual_line;
+	size_t	begin_line;
+	size_t	current_line;
 
 	}			t_info;
 
@@ -45,12 +46,17 @@ int		read_line(const int fd, char **line);
 void	mode_raw(void);
 void	mode_normal(void);
 
-/* arrow */
+/* Cursor move */
+void	which_key(int fd, t_info *info);
+
 void	arrow_left(t_info *info);
 void	arrow_right(t_info *info);
+void	go_to_end(t_info *info);
+void	go_to_begin(t_info *info);
+
 void	arrow_del(t_info *info);
 void	arrow_rev_del(t_info *info);
 void	add_char(t_info *info);
-void	which_key(int fd, t_info *info);
+
 
 #endif

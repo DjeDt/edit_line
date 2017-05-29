@@ -6,13 +6,18 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 14:14:23 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/25 15:54:27 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/29 19:47:47 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+/*
+void	mode_normal(void)
+{
 
-void	mode_raw()
+}
+*/
+void	mode_raw(void)
 {
 	struct termios new;
 
@@ -20,7 +25,7 @@ void	mode_raw()
 		ft_putendl("tcgeattr error");
 	new.c_lflag &= ~(ICANON | ECHO);
 	new.c_lflag = 0;
-	if (tcsetattr(0, TCSANOW , &new) == -1)
+	if (tcsetattr(0, TCSANOW, &new) == -1)
 		ft_putendl("tcsetattr error");
 }
 

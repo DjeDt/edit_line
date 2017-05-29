@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/26 18:13:54 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/29 20:47:13 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,22 @@
 
 void	arrow_del(t_info *info)
 {
-	size_t max;
 	size_t count;
 
-	if (ft_strlen(info->buf) < 1)
+	if (info->buf_size < 1)
 		return ;
-	max = ft_strlen(info->buf);
 	count = info->cur_pos - 1;
-	while (count < max)
+	while (count < info->buf_size)
 	{
 		info->buf[count] = info->buf[count + 1];
 		count++;
 	}
 	info->buf[count] = '\0';
 	ft_putstr("\033[1D");
-	ft_putstr("\033[0K");
-	ft_putstr("\033[s"); // save la position du curseur
+	ft_putstr("\033[s");
+	ft_putstr("\033[J");
 	ft_putstr(info->buf + (--info->cur_pos));
-	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
+	ft_putstr("\033[u");
 }
 
 void	arrow_rev_del(t_info *info)
@@ -49,10 +47,10 @@ void	arrow_rev_del(t_info *info)
 		count++;
 	}
 	info->buf[count] = '\0';
-	ft_putstr("\033[0K");
-	ft_putstr("\033[s"); // save la position du curseur
+	ft_putstr("\033[s");
+	ft_putstr("\033[J");
 	ft_putstr(info->buf + info->cur_pos);
-	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
+	ft_putstr("\033[u");
 }
 
 void	add_char(t_info *info)
@@ -73,8 +71,8 @@ void	add_char(t_info *info)
 			max--;
 		}
 		info->buf[max] = info->c;
-		ft_putstr("\033[0K");
 		ft_putstr("\033[s");
+		ft_putstr("\033[J");
 		ft_putstr(info->buf + max + 1);
 		ft_putstr("\033[u");
 	}
@@ -91,6 +89,10 @@ void	which_key(int fd, t_info *info)
 			arrow_right(info);
 		else if (info->c == 'D')
 			arrow_left(info);
+		else if (info->c == 'H')
+			go_to_begin(info);
+		else if (info->c == 'F')
+			go_to_end(info);
 		else if (info->c == '3')
 		{
 			read(fd, &info->c, 1);
