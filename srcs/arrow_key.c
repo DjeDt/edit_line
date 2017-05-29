@@ -30,9 +30,8 @@ void	arrow_del(t_info *info)
 	ft_putstr("\033[1D");
 	ft_putstr("\033[0K");
 	ft_putstr("\033[s"); // save la position du curseur
-	ft_putstr(info->buf + info->cur_pos - 1);
+	ft_putstr(info->buf + (--info->cur_pos));
 	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
-	info->cur_pos--;
 }
 
 void	arrow_rev_del(t_info *info)
@@ -56,30 +55,29 @@ void	arrow_rev_del(t_info *info)
 	ft_putstr("\033[u"); // replacer le curseur a la pos sauvegarde
 }
 
-static void decal_char(char *str, const char c, const size_t pos)
-{
-	size_t max;
-
-	max = ft_strlen(str);
-	while (max > pos)
-	{
-		str[max] = str[max - 1];
-		max--;
-	}
-	str[max] = c;
-	ft_putstr("\033[0K");
-	ft_putstr("\033[s");
-	ft_putstr(str + max + 1);
-	ft_putstr("\033[u");
-}
-
 void	add_char(t_info *info)
 {
+	size_t max;
+	size_t pos;
+
 	ft_putchar(info->c);
 	if (info->cur_pos == ft_strlen(info->buf))
 		info->buf[info->cur_pos] = info->c;
 	else
-		decal_char(info->buf, info->c, info->cur_pos);
+	{
+		max = ft_strlen(info->buf);
+		pos = info->cur_pos;
+		while (max > pos)
+		{
+			info->buf[max] = info->buf[max - 1];
+			max--;
+		}
+		info->buf[max] = info->c;
+		ft_putstr("\033[0K");
+		ft_putstr("\033[s");
+		ft_putstr(info->buf + max + 1);
+		ft_putstr("\033[u");
+	}
 	info->cur_pos++;
 }
 

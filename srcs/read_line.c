@@ -60,6 +60,14 @@ static void	new_size(t_info *info)
 	nbr += 1;
 }
 
+static void	new_line(t_info *info)
+{
+	info->cur_pos = 0;
+	info->nb_line += 1;
+
+	ft_putstr("/033[")
+}
+
 int		read_line(int fd, char **line)
 {
 	int		ret;
@@ -70,6 +78,7 @@ int		read_line(int fd, char **line)
 	{
 		fprintf(info.fd, "debut boucle readline: buf = %s\n", info.buf);
 		info.cur_pos == (size_t)info.len_max ? new_size(&info) : 0;
+		info.cur_pos == (size_t)info.char_max ? new_line(&info) : 0;
 		ret = read(fd, &info.c, 1);
 		if (info.c == 10)
 			break ;
