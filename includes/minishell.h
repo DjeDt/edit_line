@@ -27,13 +27,19 @@
 typedef struct	s_info
 {
 	FILE	*fd;
+
 	char	c;
-	size_t	cur_pos;
-	size_t	len_max;
-	int		char_max;
-	int		nb_line;
 	char	*buf;
-}				t_info;
+
+	size_t	cur_pos;
+
+	size_t	buf_max_size;
+	int		char_max_by_line;
+
+	int		begin_line;
+	int		actual_line;
+
+	}			t_info;
 
 int		read_line(const int fd, char **line);
 void	mode_raw(void);

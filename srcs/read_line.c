@@ -18,21 +18,22 @@ static void init_struct(t_info *info, int fd)
 
 	ioctl(fd, TIOCGWINSZ, &w);
 
-	info->char_max = w.ws_col;
-	info->len_max = w.ws_col;
-	info->nb_line = w.ws_row;
+	info->char_max_by_line = w.ws_col;
+	info->buf_max_size = w.ws_col;
+	info->begin_line = w.ws_row;
+	info->actual_line = w.ws_row;
 	info->cur_pos = 0;
 	info->c = 0;
 
 	info->fd = fopen("log.log", "w+");
 
-	fprintf(info->fd, "fonction init struct :\nchar_max = %d\nlen_max = %zu\nb_line = %d\n", info->char_max, info->len_max, info->nb_line);
-	if (!(info->buf = (char*)malloc(sizeof(char) * info->char_max - 2))) // - 2 == + 1 - 3 -> (- 3 pour la taille du prompt)
+	fprintf(info->fd, "fonction init struct :\nchar_max_by_line = %d\nbuf_max_size = %zu\begin_line = %d\n", info->char_max_by_line, info->buf_max_size, info->begin_line);
+	if (!(info->buf = (char*)malloc(sizeof(char) * info->char_max_by_line - 2))) // - 2 == + 1 - 3 -> (- 3 pour la taille du prompt)
 	{
 		ft_putendl("error malloc init struct");
 		exit (-1);
 	}
-	ft_bzero(info->buf, info->char_max - 2);
+	ft_bzero(info->buf, info->char_max_by_line - 2);
 }
 
 static void	new_size(t_info *info)
@@ -42,15 +43,15 @@ static void	new_size(t_info *info)
 	static int	nbr = 2;
 
 	new = NULL;
-	info->len_max = info->char_max * nbr;
+	info->buf_max_size = info->char_max_by_line * nbr;
 	fprintf(info->fd, "\n\nFonction new size :\n");
-	fprintf(info->fd, "- info->len max = %zu\n- nbr = %d\n", info->len_max, nbr);
-	if (!(new = malloc(sizeof(char) * info->len_max - 2))) // pareil que pour init struct
+	fprintf(info->fd, "- info->len max = %zu\n- nbr = %d\n", info->buf_max_size, nbr);
+	if (!(new = malloc(sizeof(char) * info->buf_max_size - 2))) // pareil que pour init struct
 	{
 		ft_putendl("error malloc new_size");
 		exit (-1);
 	}
-	ft_bzero(new, info->len_max);
+	ft_bzero(new, info->buf_max_size);
 	count = -1;
 	while (info->buf[++count])
 		new[count] = info->buf[count];
@@ -59,7 +60,7 @@ static void	new_size(t_info *info)
 	info->buf = new;
 	nbr += 1;
 }
-
+/*
 static void	new_line(t_info *info)
 {
 	info->cur_pos = 0;
@@ -67,7 +68,7 @@ static void	new_line(t_info *info)
 
 	ft_putstr("/033[")
 }
-
+*/
 int		read_line(int fd, char **line)
 {
 	int		ret;
@@ -77,8 +78,8 @@ int		read_line(int fd, char **line)
 	while (1)
 	{
 		fprintf(info.fd, "debut boucle readline: buf = %s\n", info.buf);
-		info.cur_pos == (size_t)info.len_max ? new_size(&info) : 0;
-		info.cur_pos == (size_t)info.char_max ? new_line(&info) : 0;
+		info.cur_pos == info.buf_max_size ? new_size(&info) : 0;
+//		info.cur_pos == info.char_max_by_line ? new_line(&info) : 0;
 		ret = read(fd, &info.c, 1);
 		if (info.c == 10)
 			break ;
