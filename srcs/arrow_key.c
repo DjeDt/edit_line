@@ -16,20 +16,21 @@ void	arrow_del(t_info *info)
 {
 	size_t count;
 
-	if (info->buf_size < 1)
-		return ;
-	count = info->cur_pos - 1;
-	while (count < info->buf_size)
+	if (info->buf_size > 0)
 	{
-		info->buf[count] = info->buf[count + 1];
-		count++;
+		count = info->cur_pos - 1;
+		while (count < info->buf_size)
+		{
+			info->buf[count] = info->buf[count + 1];
+			count++;
+		}
+		info->buf[count] = '\0';
+		ft_putstr("\033[1D");
+		ft_putstr("\033[s");
+		ft_putstr("\033[J");
+		ft_putstr(info->buf + (--info->cur_pos));
+		ft_putstr("\033[u");
 	}
-	info->buf[count] = '\0';
-	ft_putstr("\033[1D");
-	ft_putstr("\033[s");
-	ft_putstr("\033[J");
-	ft_putstr(info->buf + (--info->cur_pos));
-	ft_putstr("\033[u");
 }
 
 void	arrow_rev_del(t_info *info)
@@ -37,20 +38,24 @@ void	arrow_rev_del(t_info *info)
 	size_t max;
 	size_t count;
 
-	if (info->buf[info->cur_pos + 1] && info->buf[info->cur_pos + 1] == '\0')
-		return ;
-	count = info->cur_pos;
-	max = ft_strlen(info->buf) + 1;
-	while (count < max && info->buf[count] != '\0')
+//	if (info->buf[info->cur_pos + 1] && info->buf[info->cur_pos + 1] == '\0')
+//		return ;
+	if (info->buf_size > 0 && info->cur_pos < info->buf_size)
 	{
-		info->buf[count] = info->buf[count + 1];
-		count++;
+
+		count = info->cur_pos;
+		max = ft_strlen(info->buf) + 1;
+		while (count < max && info->buf[count] != '\0')
+		{
+			info->buf[count] = info->buf[count + 1];
+			count++;
+		}
+		info->buf[count] = '\0';
+		ft_putstr("\033[s");
+		ft_putstr("\033[J");
+		ft_putstr(info->buf + info->cur_pos);
+		ft_putstr("\033[u");
 	}
-	info->buf[count] = '\0';
-	ft_putstr("\033[s");
-	ft_putstr("\033[J");
-	ft_putstr(info->buf + info->cur_pos);
-	ft_putstr("\033[u");
 }
 
 void	add_char(t_info *info)
