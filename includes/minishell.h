@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 15:02:42 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/29 19:35:26 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/30 15:55:31 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ typedef struct	s_info
 
 	size_t	begin_line;
 	size_t	current_line;
+
+	size_t min_line;
+	size_t max_line;
 
 	}			t_info;
 

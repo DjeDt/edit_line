@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 19:28:14 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/29 21:50:12 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/30 18:43:14 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	go_to_begin(t_info *info)
 
 void	go_to_end(t_info *info)
 {
+	ft_putendl("fonction go to end");
 	fprintf(info->fd, "Fonction go_to_end\n");
 	fprintf(info->fd, "pos_cur = %zu\n\n", info->cur_pos);
 	while (info->cur_pos < info->buf_size)
@@ -30,29 +31,37 @@ void	go_to_end(t_info *info)
 
 void	arrow_left(t_info *info)
 {
-	fprintf(info->fd, "Fonction arrow_left\n");
-	fprintf(info->fd, "pos_cur = %zu\n\n", info->cur_pos);
 	if (info->cur_pos > 0)
 	{
-		info->cur_pos--;
+		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		{
+//			fprintf(info->fd, "fonction arrow_left condition modulo\n\n");
+			info->current_line -= 1;
+			fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
+		}
 		ft_putstr("\033[1D");
+		info->cur_pos -= 1;
 	}
 }
 
 void	arrow_right(t_info *info)
 {
-	fprintf(info->fd, "Fonction arrow_right\n");
-	fprintf(info->fd, "pos_cur = %zu\n", info->cur_pos);
-	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+	size_t count;
+
+	if (info->cur_pos < info->buf_size)
 	{
-		fprintf(info->fd, "option modulo\n\n");
-		info->cur_pos++;
-		ft_putstr("\033[1E");
-	}
-	else if (info->cur_pos < info->buf_size)
-	{
-		fprintf(info->fd, "option normale\n\n");
-		info->cur_pos++;
-		ft_putstr("\033[1C");
+		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		{
+//			fprintf(info->fd, "fonction arrow_right condition modulo\n\n");
+			info->current_line += 1;
+			fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
+			count = info->max_line;
+			ft_putstr("\033[E");
+			while (--count < info->min_line)
+				ft_putstr("\033[1D");
+		}
+		else
+			ft_putstr("\033[1C");
+		info->cur_pos += 1;
 	}
 }

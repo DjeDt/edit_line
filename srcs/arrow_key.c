@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/29 20:47:13 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/05/30 18:42:01 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	arrow_del(t_info *info)
 
 	if (info->buf_size > 0)
 	{
-		count = info->cur_pos - 1;
+		info->cur_pos -= 1;
+		count = info->cur_pos;
 		while (count < info->buf_size)
 		{
 			info->buf[count] = info->buf[count + 1];
@@ -28,24 +29,31 @@ void	arrow_del(t_info *info)
 		ft_putstr("\033[1D");
 		ft_putstr("\033[s");
 		ft_putstr("\033[J");
-		ft_putstr(info->buf + (--info->cur_pos));
+		ft_putstr(info->buf + info->cur_pos);
 		ft_putstr("\033[u");
+		info->buf_size -= 1;
+	}
+	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+	{
+		info->current_line -= 1;
+		count = info->min_line;
+		ft_putstr("\033[1A");
+		while (count < info->max_line)
+		{
+			ft_putstr("\033[1C");
+			count++;
+		}
 	}
 }
 
 void	arrow_rev_del(t_info *info)
 {
-	size_t max;
 	size_t count;
 
-//	if (info->buf[info->cur_pos + 1] && info->buf[info->cur_pos + 1] == '\0')
-//		return ;
 	if (info->buf_size > 0 && info->cur_pos < info->buf_size)
 	{
-
 		count = info->cur_pos;
-		max = ft_strlen(info->buf) + 1;
-		while (count < max && info->buf[count] != '\0')
+		while ((count < info->buf_size) && info->buf[count] != '\0')
 		{
 			info->buf[count] = info->buf[count + 1];
 			count++;
@@ -55,6 +63,7 @@ void	arrow_rev_del(t_info *info)
 		ft_putstr("\033[J");
 		ft_putstr(info->buf + info->cur_pos);
 		ft_putstr("\033[u");
+		info->buf_size -= 1;
 	}
 }
 
@@ -64,24 +73,35 @@ void	add_char(t_info *info)
 	size_t pos;
 
 	ft_putchar(info->c);
-	if (info->cur_pos == ft_strlen(info->buf))
-		info->buf[info->cur_pos] = info->c;
+	if (info->cur_pos == info->buf_size)
+	{
+		info->buf[info->cur_pos++] = info->c;
+		info->buf_size += 1;
+	}
 	else
 	{
-		max = ft_strlen(info->buf);
 		pos = info->cur_pos;
-		while (max > pos)
-		{
+		max = info->buf_size + 1;
+		while (--max > pos)
 			info->buf[max] = info->buf[max - 1];
-			max--;
-		}
 		info->buf[max] = info->c;
 		ft_putstr("\033[s");
 		ft_putstr("\033[J");
 		ft_putstr(info->buf + max + 1);
 		ft_putstr("\033[u");
+		info->cur_pos += 1;
+		info->buf_size += 1;
 	}
-	info->cur_pos++;
+	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+	{
+//		fprintf(info->fd, "fonction add_char fonction modulo");
+		info->current_line += 1;
+		fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
+		pos = info->max_line;
+		ft_putstr("\033[E");
+		while (--pos < info->min_line)
+			ft_putstr("\033[1D");
+	}
 }
 
 void	which_key(int fd, t_info *info)
