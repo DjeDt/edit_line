@@ -36,7 +36,10 @@ void	arrow_left(t_info *info)
 	{
 		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
 		{
-			count = info->min_line;
+			if (info->current_line - 1 == 1)
+				count = 3;
+			else
+				count = 0;
 			ft_putstr("\033[1F");
 			while (count < info->max_line)
 			{

@@ -39,7 +39,7 @@ static void	init_struct(t_info *info, int fd)
 	info->begin_line = w.ws_row;
 	info->current_line = 1;
 
-	info->min_line = 3;
+	info->min_line = 4;
 	info->max_line = w.ws_col;
 
 	info->fd = fopen("log.log", "a"); /* A supprimer */
@@ -82,9 +82,9 @@ int			read_line(int fd, char **line)
 		fprintf(info.fd, "debut boucle read_line: current line = %zu\n", info.current_line);
 		info.cur_pos == info.buf_max_size ? new_size(&info) : 0;
 		if (info.current_line > 1)
-			info.min_line = 0;
+			info.min_line = 1;
 		else
-			info.min_line = 3;
+			info.min_line = 4;
 		ret = read(fd, &info.c, 1);
 		if (info.c == 10)
 			break ;
