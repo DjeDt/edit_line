@@ -72,6 +72,22 @@ void	add_char(t_info *info)
 	size_t max;
 	size_t pos;
 
+
+	/*	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+	{
+//		fprintf(info->fd, "fonction add_char fonction modulo");
+		info->current_line += 1;
+		fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
+		pos = info->max_line;
+		ft_putstr("\033[E");
+		{
+			while (pos < info->min_line)
+			{
+				ft_putstr("\033[1D");
+				pos--;
+			}
+		}
+	}*/
 	ft_putchar(info->c);
 	if (info->cur_pos == info->buf_size)
 	{
@@ -91,16 +107,6 @@ void	add_char(t_info *info)
 		ft_putstr("\033[u");
 		info->cur_pos += 1;
 		info->buf_size += 1;
-	}
-	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
-	{
-//		fprintf(info->fd, "fonction add_char fonction modulo");
-		info->current_line += 1;
-		fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
-		pos = info->max_line;
-		ft_putstr("\033[E");
-		while (--pos < info->min_line)
-			ft_putstr("\033[1D");
 	}
 }
 

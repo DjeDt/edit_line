@@ -22,7 +22,6 @@ void	go_to_begin(t_info *info)
 
 void	go_to_end(t_info *info)
 {
-	ft_putendl("fonction go to end");
 	fprintf(info->fd, "Fonction go_to_end\n");
 	fprintf(info->fd, "pos_cur = %zu\n\n", info->cur_pos);
 	while (info->cur_pos < info->buf_size)
@@ -31,15 +30,23 @@ void	go_to_end(t_info *info)
 
 void	arrow_left(t_info *info)
 {
+	size_t count;
+
 	if (info->cur_pos > 0)
 	{
 		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
 		{
-//			fprintf(info->fd, "fonction arrow_left condition modulo\n\n");
+			count = info->min_line;
+			ft_putstr("\033[1F");
+			while (count < info->max_line)
+			{
+				ft_putstr("\033[1C");
+				count++;
+			}
 			info->current_line -= 1;
-			fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
 		}
-		ft_putstr("\033[1D");
+		else
+			ft_putstr("\033[1D");
 		info->cur_pos -= 1;
 	}
 }
@@ -52,12 +59,10 @@ void	arrow_right(t_info *info)
 	{
 		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
 		{
-//			fprintf(info->fd, "fonction arrow_right condition modulo\n\n");
 			info->current_line += 1;
-			fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
 			count = info->max_line;
 			ft_putstr("\033[E");
-			while (--count < info->min_line)
+			while (--count > info->min_line)
 				ft_putstr("\033[1D");
 		}
 		else
