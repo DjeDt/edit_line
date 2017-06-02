@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/30 18:42:01 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/02 22:34:51 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ void	arrow_del(t_info *info)
 
 	if (info->buf_size > 0)
 	{
+		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		{
+			ft_putstr("\033[1F");
+			ft_putstr("\033[1000C");
+			info->current_line -= 1;
+		}
 		info->cur_pos -= 1;
 		count = info->cur_pos;
 		while (count < info->buf_size)
@@ -33,17 +39,6 @@ void	arrow_del(t_info *info)
 		ft_putstr("\033[u");
 		info->buf_size -= 1;
 	}
-	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
-	{
-		info->current_line -= 1;
-		count = info->min_line;
-		ft_putstr("\033[1A");
-		while (count < info->max_line)
-		{
-			ft_putstr("\033[1C");
-			count++;
-		}
-	}
 }
 
 void	arrow_rev_del(t_info *info)
@@ -53,7 +48,7 @@ void	arrow_rev_del(t_info *info)
 	if (info->buf_size > 0 && info->cur_pos < info->buf_size)
 	{
 		count = info->cur_pos;
-		while ((count < info->buf_size) && info->buf[count] != '\0')
+		while ((count < info->buf_size) && (info->buf[count] != '\0'))
 		{
 			info->buf[count] = info->buf[count + 1];
 			count++;
@@ -72,27 +67,14 @@ void	add_char(t_info *info)
 	size_t max;
 	size_t pos;
 
-
 	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
 	{
-//		fprintf(info->fd, "fonction add_char fonction modulo");
-		info->current_line += 1;
-		fprintf(info->fd, "fonction arrow_tight: current line = %zu\n", info->current_line);
-		pos = info->max_line;
 		ft_putstr("\033[E");
-		while (pos < info->min_line)
-		{
-			ft_putstr("\033[1D");
-			pos--;
-		}
+		info->current_line += 1;
 	}
 	ft_putchar(info->c);
-
 	if (info->cur_pos == info->buf_size)
-	{
-		info->buf[info->cur_pos++] = info->c;
-		info->buf_size += 1;
-	}
+		info->buf[info->cur_pos] = info->c;
 	else
 	{
 		pos = info->cur_pos;
@@ -104,9 +86,9 @@ void	add_char(t_info *info)
 		ft_putstr("\033[J");
 		ft_putstr(info->buf + max + 1);
 		ft_putstr("\033[u");
-		info->cur_pos += 1;
-		info->buf_size += 1;
 	}
+	info->buf_size += 1;
+	info->cur_pos += 1;
 }
 
 void	which_key(int fd, t_info *info)

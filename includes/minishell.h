@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 15:02:42 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/30 15:55:31 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/02 21:49:19 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@
 # include <signal.h>
 # include <termios.h>
 
-/* pour log  */
-# include <stdio.h>
-//FILE	*fd;
-/* Fin du log */
+# include <stdio.h> // Pour log
 
 typedef struct	s_info
 {
