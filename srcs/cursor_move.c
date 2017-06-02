@@ -67,6 +67,7 @@ void	arrow_right(t_info *info)
 			ft_putstr("\033[E");
 			while (--count > info->min_line)
 				ft_putstr("\033[1D");
+//			info->cur_pos++;
 		}
 		else
 			ft_putstr("\033[1C");
