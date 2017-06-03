@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/03 22:01:43 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 22:39:02 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,12 @@ void	add_char(t_info *info)
 	int max;
 	int pos;
 
-	fprintf(info->fd, "add_char: curseur = %d, lettre = %c\n", info->cur_pos, info->buf[info->cur_pos]);
 	ft_putchar(info->c);
+	if (((info->cur_pos + 4) % info->max_line) == 0)
+	{
+		ft_putstr("\033[1E");
+		info->current_line += 1;
+	}
 	if (info->cur_pos == info->buf_size)
 		info->buf[info->cur_pos] = info->c;
 	else
@@ -85,11 +89,6 @@ void	add_char(t_info *info)
 	}
 	info->buf_size += 1;
 	info->cur_pos += 1;
-	if (((info->cur_pos + 3) % info->max_line) == 0)
-	{
-		ft_putstr("\033[1E");
-		info->current_line += 1;
-	}
 }
 
 void	which_key(int fd, t_info *info)

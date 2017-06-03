@@ -6,17 +6,19 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/23 14:14:23 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/05/29 19:47:47 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 22:41:33 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /*
 void	mode_normal(void)
 {
 
 }
 */
+
 void	mode_raw(void)
 {
 	struct termios new;
