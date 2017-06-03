@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/08 22:47:22 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/02 22:31:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 21:51:29 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void	init_struct(t_info *info, int fd)
 	info->c = 0;
 	info->buf = NULL;
 	info->buf_size = 0;
+	info->nbr_mlc = 2;
 
 	info->cur_pos = 0;
 
@@ -42,7 +43,7 @@ static void	init_struct(t_info *info, int fd)
 	info->min_line = 3;
 	info->max_line = w.ws_col;
 
-	info->fd = fopen("log.log", "a+"); /* A supprimer */
+	info->fd = fopen("log.log", "w+"); /* A supprimer */
 	if (!(info->buf = (char*)malloc(sizeof(char) * (info->char_max_by_line - 3))))
 		ft_error("malloc error: ", "func init_struct: ", info);
 	ft_bzero(info->buf, info->char_max_by_line - 3);
@@ -50,22 +51,21 @@ static void	init_struct(t_info *info, int fd)
 
 static void	new_size(t_info *info)
 {
-	char		*new;
-	size_t		count;
-	static int	nbr = 2;
+	char	*new;
+	int		count;
 
 	new = NULL;
 	count = -1;
-	info->buf_max_size = info->char_max_by_line * nbr;
+	fprintf(info->fd, "fonction new_size\n\n");
+	info->buf_max_size = info->max_line * info->nbr_mlc;
 	if (!(new = malloc(sizeof(char) * info->buf_max_size)))
 		ft_error("malloc error: ", "func new_size: ", info);
 	ft_bzero(new, info->buf_max_size);
-	while (info->buf[++count])
+	while (info->buf[++count] != '\0')
 		new[count] = info->buf[count];
-	new[++count] = '\0';
 	ft_memdel((void*)&info->buf);
 	info->buf = new;
-	nbr += 1;
+	info->nbr_mlc += 1;
 }
 
 int			read_line(int fd, char **line)
@@ -87,6 +87,8 @@ int			read_line(int fd, char **line)
 		if (info.c == 27)
 			which_key(fd, &info);
 	}
+	go_to_end(&info);
 	*line = info.buf;
+	fclose(info.fd);
 	return (ret);
 }

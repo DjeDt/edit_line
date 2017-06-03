@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/25 15:21:58 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/02 22:34:51 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 22:01:43 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 void	arrow_del(t_info *info)
 {
-	size_t count;
+	int count;
 
 	if (info->buf_size > 0)
 	{
-		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		info->cur_pos -= 1;
+		if (((info->cur_pos + 3) % info->max_line) == 0)
 		{
 			ft_putstr("\033[1F");
 			ft_putstr("\033[1000C");
 			info->current_line -= 1;
 		}
-		info->cur_pos -= 1;
 		count = info->cur_pos;
 		while (count < info->buf_size)
 		{
@@ -43,7 +43,7 @@ void	arrow_del(t_info *info)
 
 void	arrow_rev_del(t_info *info)
 {
-	size_t count;
+	int count;
 
 	if (info->buf_size > 0 && info->cur_pos < info->buf_size)
 	{
@@ -64,14 +64,10 @@ void	arrow_rev_del(t_info *info)
 
 void	add_char(t_info *info)
 {
-	size_t max;
-	size_t pos;
+	int max;
+	int pos;
 
-	if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
-	{
-		ft_putstr("\033[E");
-		info->current_line += 1;
-	}
+	fprintf(info->fd, "add_char: curseur = %d, lettre = %c\n", info->cur_pos, info->buf[info->cur_pos]);
 	ft_putchar(info->c);
 	if (info->cur_pos == info->buf_size)
 		info->buf[info->cur_pos] = info->c;
@@ -83,12 +79,17 @@ void	add_char(t_info *info)
 			info->buf[max] = info->buf[max - 1];
 		info->buf[max] = info->c;
 		ft_putstr("\033[s");
-		ft_putstr("\033[J");
+		ft_putstr("\033[0J");
 		ft_putstr(info->buf + max + 1);
 		ft_putstr("\033[u");
 	}
 	info->buf_size += 1;
 	info->cur_pos += 1;
+	if (((info->cur_pos + 3) % info->max_line) == 0)
+	{
+		ft_putstr("\033[1E");
+		info->current_line += 1;
+	}
 }
 
 void	which_key(int fd, t_info *info)

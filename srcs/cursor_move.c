@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 19:28:14 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/02 22:39:35 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 21:52:39 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,29 @@
 void	go_to_begin(t_info *info)
 {
 	fprintf(info->fd, "Fonction go_to_begin\n");
-	fprintf(info->fd, "pos_cur = %zu\n\n", info->cur_pos);
+	int ret;
 
-	while (info->cur_pos > 0)
-		arrow_left(info);
+	ret = 0;
+	while (ret == 0)
+		ret = arrow_left(info);
 }
 
 void	go_to_end(t_info *info)
 {
 	fprintf(info->fd, "Fonction go_to_end\n");
-	fprintf(info->fd, "pos_cur = %zu\n\n", info->cur_pos);
+	int	ret;
 
-	while (info->cur_pos < info->buf_size)
-		arrow_right(info);
+	ret = 0;
+	while (ret == 0)
+		ret = arrow_right(info);
 }
 
-void	arrow_left(t_info *info)
+int		arrow_left(t_info *info)
 {
 	if (info->cur_pos > 0)
 	{
-		fprintf(info->fd, "arrow_left: curseur = %zu, lettre = %c\n", info->cur_pos, info->buf[info->cur_pos]);
-		info->cur_pos -= 1;
-		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		fprintf(info->fd, "arrow_left: curseur = %d, lettre = %c\n", info->cur_pos, info->buf[info->cur_pos]);
+		if (((info->cur_pos + 3) % info->max_line) == 0)
 		{
 			ft_putstr("\033[1F");
 			ft_putstr("\033[1000C");
@@ -44,20 +45,27 @@ void	arrow_left(t_info *info)
 		}
 		else
 			ft_putstr("\033[1D");
+		info->cur_pos -= 1;
+		return (0);
 	}
+	else
+		return (-1);
 }
 
-void	arrow_right(t_info *info)
+int		arrow_right(t_info *info)
 {
+	fprintf(info->fd, "arrow_right: curseur = %d, lettre = %c\n", info->cur_pos, info->buf[info->cur_pos]);
 	if (info->cur_pos < info->buf_size)
 	{
-		if (((info->cur_pos + 3) % info->char_max_by_line) == 0)
+		ft_putstr("\033[1C");
+		info->cur_pos += 1;
+		if (((info->cur_pos + 3) % info->max_line) == 0)
 		{
-			ft_putstr("\033[E");
+			ft_putstr("\033[1E");
 			info->current_line += 1;
 		}
-		else
-			ft_putstr("\033[1C");
-		info->cur_pos += 1;
+		return (0);
 	}
+	else
+		return (-1);
 }
