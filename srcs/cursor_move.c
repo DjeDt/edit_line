@@ -6,7 +6,7 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 19:28:14 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/03 22:39:25 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/03 22:54:38 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int		arrow_right(t_info *info)
 			ft_putstr("\033[1E");
 			info->current_line += 1;
 		}
+		else
+			ft_putstr("\033[1C");
 		return (0);
 	}
 	else
