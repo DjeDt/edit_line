@@ -6,7 +6,7 @@
 #    By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/17 14:14:43 by ddinaut           #+#    #+#              #
-#    Updated: 2017/05/25 15:23:09 by ddinaut          ###   ########.fr        #
+#    Updated: 2017/06/10 18:07:35 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -42,9 +42,14 @@ SRC = $(addprefix $(SRC_PATH)/,$(SRCS))
 
 # Sources #
 SRCS =	main.c \
-		read_line.c \
-		arrow_key.c \
-		cursor_move.c
+		add_char.c \
+		change_term_mode.c \
+		cursor_move.c \
+		hist_utils.c \
+		history.c \
+		key_delete.c \
+		match_key.c \
+		read_line.c
 
 # Rules #
 .PHONY: all norme clean fclean re

@@ -6,11 +6,13 @@
 /*   By: ddinaut <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 19:28:14 by ddinaut           #+#    #+#             */
-/*   Updated: 2017/06/03 22:54:38 by ddinaut          ###   ########.fr       */
+/*   Updated: 2017/06/08 18:38:20 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "readline.h"
+
+#include <stdio.h>
 
 void	go_to_begin(t_info *info)
 {
